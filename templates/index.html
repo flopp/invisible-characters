@@ -1,0 +1,60 @@
+{{ define "canonical" }}{{ end }}
+{{ define "title" }}Unicode characters you can not see{{ end }}
+{{ define "description" }}Unicode characters you can not see -Invisible Characters{{ end }}
+
+{{ define "content" }}
+<section class="section">
+    <h3 class="title">Invisible Unicode characters?</h3>
+    <p>
+        In Unicode there are a lot of invisible characters:
+        regular white-space characters (e.g. <a href="0020-SPACE.html">U+0020 SPACE</a>),
+        language specific fillers (e.g. <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> of the Korean Hangual alphabet),
+        or special characters (e.g. <a href="2800-BRAILLE-PATTERN-BLANK.html">U+2800 BRAILLE PATTERN BLANK</a>).
+        While all of these have a specific meaning in their natural context, they can be used in various applications that don't allow for regular whitespace characters.
+    </p>
+</section>
+
+<section class="section pt-0">
+    <h3 class="title">Unusual Applications</h3>
+    <p>
+        While the popular game <a href="https://www.epicgames.com/store/de/p/among-us" target=_blank>Among Us</a> doesn't allow for an empty player name, or a name just containing regular space characters, you can copy and paste the <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> when naming your player.
+    </p>
+    <p>
+        <a href="empty-whatsapp.html">Send empty Whatsapp messages (instructions)</a> using the <a href="200E-LEFT-TO-RIGHT-MARK.html">U+200E LEFT-TO-RIGHT MARK</a>.
+    </p>
+    <p>
+        When copy and pasting the <a href="200C-ZERO-WIDTH-NON-JOINER.html">U+200C ZERO WIDTH NON-JOINER</a> into the title field of a Youtube video, the title becomes empty.
+    </p>
+    <p>
+        <a href="empty-tweet.html">Send empty tweets (instructions)</a> using the <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a>.
+    </p>
+</section>
+
+<section class="section pt-0">
+    <h3 class="title">View invisible characters</h3>
+    <p>
+        If you want to see what invisible characters are contained in a block of text, you can use our <a href="view.html">online tool to view invisible characters</a>.
+    </p>
+</section>
+    
+<section class="section pt-0">
+    <h3 class="title">List of invisible Unicode characters</h3>
+    <table class="table">
+        {{ range .Characters }}
+        <tr>
+            <td>
+                <a href="{{ .Url }}">U+{{ .Code }} {{ .Name }}</a>
+            </td>
+            <td>
+                <button class="button copy-button" data-clipboard-text="{{ .Char }}">
+                    <span>Copy</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-copy"></i>
+                    </span>
+                </button>
+            </td>
+        </tr>
+        {{ end }}
+    </table>
+</section>
+{{ end }}

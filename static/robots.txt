@@ -1,0 +1,5 @@
+User-agent: ltx71 - (http://ltx71.com/)
+Disallow: *
+
+User-agent: MJ12bot
+Disallow: *

@@ -1,0 +1,28 @@
+{{ define "canonical" }}empty-tweet.html{{ end }}
+{{ define "title" }}Send an empty tweet{{ end }}
+{{ define "description" }}Send an empty tweet - Invisible Characters{{ end }}
+
+{{ define "content" }}
+<section class="section">
+    <h3 class="title">Send an empty tweet</h3>
+    <p>
+        <a href="https://www.twitter.com" target=_blank>Twitter</a> doesn't allow its users to post empty tweets, or tweets that only contain regular space characters.
+    </p>
+    <p>
+        To post an empty tweet, you can just use the invisible <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> character!
+        Click the "Copy" button below which copies the character into your clipboard, then paste into Twitter's tweet editor, and hit the "Send" button.
+        Done!
+    </p>
+    <div class="field">
+        <p class="control">
+            <button class="button copy-button" data-clipboard-text="ㅤ">
+                <span>Copy</span>
+                <span class="icon is-small"><i class="fas fa-copy"></i></span>
+            </button>
+        </p>
+    </div>
+    <p>
+        This works both in Twitter's smartphone app and in the web client.
+    </p>
+</section>
+{{ end }}

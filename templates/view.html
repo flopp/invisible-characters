@@ -1,0 +1,90 @@
+{{ define "canonical" }}view.html{{ end }}
+{{ define "title" }}View invisible/whitespace characters{{ end }}
+{{ define "description" }}View invisible/whitespace characters - Invisible Characters{{ end }}
+
+{{ define "content" }}
+<section class="section">
+    <h3 class="title">View invisible characters</h3>
+    <p>
+        Here you can view invisible characters inside a block of text.
+        Just copy and paste your text (which contains invisible characters) into the text box below and click the "View!" button.
+    </p>
+
+    <div class="field">
+        <label class="label">Your Text</label>
+        <div class="control">
+            <textarea id="input" class="textarea" placeholder="Insert text to decode"></textarea>
+        </div>
+    </div>
+
+    <div class="field">
+        <p class="control">
+            <button id="view-button" class="button is-primary">
+                View!
+            </a>
+        </p>
+    </div>
+
+    <div id="output">
+
+    </div>
+
+</section>
+
+<script>
+    var invisible_characters = new Map();
+    {{ range .Characters }}
+    invisible_characters.set("{{ .Code }}", "{{ .Name }}");
+    {{ end }}
+
+    function decode(c0, c1) {
+        var codepoint = c0;
+        if (c1 != 0) {
+            codepoint = ((c0 - 0xD800) * 0x400) + (c1 - 0xDC00) + 0x10000;
+        }
+
+        var hex = codepoint.toString(16).toUpperCase();
+        while (hex.length < 4) {
+            hex = "0" + hex;
+        }
+
+        if (c1 == 0) {
+            var c = String.fromCodePoint(c0);
+            if (c == "<") {
+               return "&lt;"
+            } else if (c == ">") {
+                return "&gt;"
+            } else if (invisible_characters.get(hex) !== undefined) {
+                var url = hex + "-" + invisible_characters.get(hex).replace(" ", "-") + ".html";
+                return "<a class=\"char\" href=\"" + url + "\">U+" + hex + "</a>";
+            } else if (/\s/.test(c)) {
+                return "<span class=\"char\">U+" + hex + "</span>";
+            }
+            return c;
+        } else {
+            if (invisible_characters.get(hex) !== undefined) {
+                var url = hex + "-" + invisible_characters.get(hex).replace(" ", "-") + ".html";
+                return "<a class=\"char\" href=\"" + url + "\">U+" + hex + "</a>";
+            }
+            return String.fromCodePoint(c0, c1);
+        }
+    }
+    document.getElementById("view-button").addEventListener('click', function (event) {
+        var input = document.getElementById("input").value;
+        var output = "";
+        var surrogate = 0;
+        for (var i = 0; i < input.length; i += 1) {
+            var c = input.charCodeAt(i);
+            if (surrogate != 0) {
+                output += decode(surrogate, c);
+                surrogate = 0;
+            } else if (c >= 0xD800 && c < 0xDC00) {
+                surrogate = c;
+            } else {
+                output += decode(c, 0);
+            }
+        }
+        document.getElementById("output").innerHTML = output;
+    });
+</script>
+{{ end }}

@@ -1,0 +1,65 @@
+{{ define "base" }}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <title>{{ template "title" . }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0073A5" />
+    <meta name="Description" content="{{ template "description" . }}" />
+    <link rel="canonical" href="https://invisible-characters.com/{{ template "canonical" .}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-77L9419NRL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-77L9419NRL');
+    </script>
+</head>
+<body>
+    <nav class="navbar is-link">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <h1 class="title has-text-white">Invisible Characters</h1>
+                </a>
+            </div>
+            <div class="navbar-item">
+                <h2 class="subtitle has-text-white">{{ template "title" . }}</h2>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {{ template "content" . }}
+    </div>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <a href="/"><strong>Invisible Characters</strong></a>
+                -
+                <a href="mailto:mail@invisible-characters.com">Contact</a>
+                -
+                <a href="legal.html">Legal/Privacy</a>
+            </p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var clipboard = new ClipboardJS('.copy-button');
+        clipboard.on('success', function (e) {
+            e.trigger.classList.add("is-success");
+            setTimeout(function () {
+                e.trigger.classList.remove("is-success");
+            }, 500);
+        });
+        clipboard.on('error', function (e) {
+            console.log(e);
+            e.trigger.classList.add("is-danger");
+            setTimeout(function () {
+                e.trigger.classList.remove("is-danger");
+            }, 500);
+        });
+    </script>
+</body>{{ end }}
