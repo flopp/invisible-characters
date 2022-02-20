@@ -120,10 +120,7 @@ func createSitemapFile(context *Context) {
 	defer f.Close()
 
 	for _, url := range context.Urls {
-		if _, err := f.WriteString(url); err != nil {
-			panic(err)
-		}
-		if _, err := f.WriteString("\n"); err != nil {
+		if _, err := f.WriteString(fmt.Sprintf("https://invisible-characters.com/%s\n", url)); err != nil {
 			panic(err)
 		}
 	}
