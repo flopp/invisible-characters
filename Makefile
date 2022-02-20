@@ -10,4 +10,7 @@ clean:
 
 .phony: upload
 upload:
-	rsync .out/*  static/.htaccess static/favicon.ico static/robots.txt $(TARGET)
+	rsync \
+		.out/* \
+		static/style.css static/.htaccess static/favicon.ico static/robots.txt \
+		$(TARGET)
