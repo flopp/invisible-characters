@@ -52,5 +52,6 @@
     {"code": "1D177", "name": "MUSICAL SYMBOL BEGIN SLUR"},
     {"code": "1D178", "name": "MUSICAL SYMBOL END SLUR"},
     {"code": "1D179", "name": "MUSICAL SYMBOL BEGIN PHRASE"},
-    {"code": "1D17A", "name": "MUSICAL SYMBOL END PHRASE"}
+    {"code": "1D17A", "name": "MUSICAL SYMBOL END PHRASE"},
+    {"code": "E0020", "name": "TAG SPACE"}
 ]
