@@ -33,6 +33,7 @@
     {"code": "2062", "name": "INVISIBLE TIMES", "description": "The invisible times codepoint is used in mathematical type-setting to indicate the multiplication of two terms without a visible multiplication operator, e.g. when type-setting 2x (the multiplication of the number 2 and the variable x), the invisible times codepoint can be inserted in-between: 2 <U+2062> x ."},
     {"code": "2063", "name": "INVISIBLE SEPARATOR", "description": "A contiguity operator indicating that adjacent mathematical symbols form a list, e.g. when no visible comma is used between multiple indices."},
     {"code": "2064", "name": "INVISIBLE PLUS", "description": "A contiguity operator indicating addition."},
+    {"code": "2065", "name": "Invisible operators - undefined", "description": "Undefined symbol in General Punctuation/Invisible Operators."},
     {"code": "206A", "name": "INHIBIT SYMMETRIC SWAPPING"},
     {"code": "206B", "name": "ACTIVATE SYMMETRIC SWAPPING"},
     {"code": "206C", "name": "INHIBIT ARABIC FORM SHAPING"},
