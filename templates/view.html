@@ -25,13 +25,23 @@
         </p>
     </div>
 
-    <div id="output">
-
+    <div class="field">
+        <label class="label">Statistics</label>
+        <div class="control">
+            <ul id="statistics"></ul>
+        </div>
     </div>
 
+    <div class="field">
+        <label class="label">Annotated Text</label>
+        <div class="control">
+            <div id="output" class="box wrap"></div>
+        </div>
+    </div>
 </section>
 
 <script>
+    var statistics = new Map();
     var invisible_characters = new Map();
     {{ range .Characters }}
     invisible_characters.set("{{ .Code }}", "{{ .Name }}");
@@ -48,31 +58,34 @@
             hex = "0" + hex;
         }
 
+        var c;
         if (c1 == 0) {
-            var c = String.fromCodePoint(c0);
-            if (c == "<") {
-               return "&lt;"
-            } else if (c == ">") {
-                return "&gt;"
-            } else if (invisible_characters.get(hex) !== undefined) {
-                var url = hex + "-" + invisible_characters.get(hex).replace(" ", "-") + ".html";
-                return "<a class=\"char\" href=\"" + url + "\">U+" + hex + "</a>";
-            } else if (/\s/.test(c)) {
-                return "<span class=\"char\">U+" + hex + "</span>";
-            }
-            return c;
+            c = String.fromCodePoint(c0);
         } else {
-            if (invisible_characters.get(hex) !== undefined) {
-                var url = hex + "-" + invisible_characters.get(hex).replace(" ", "-") + ".html";
-                return "<a class=\"char\" href=\"" + url + "\">U+" + hex + "</a>";
-            }
-            return String.fromCodePoint(c0, c1);
+            c = String.fromCodePoint(c0, c1);
         }
+
+        if (c == "<") {
+            return "&lt;"
+        } else if (c == ">") {
+            return "&gt;"
+        } else if (invisible_characters.get(hex) !== undefined) {
+            statistics.set(hex, (statistics.get(hex) || 0) + 1);
+            var url = hex + "-" + invisible_characters.get(hex).replaceAll(" ", "-") + ".html";
+            return "<a class=\"char has-background-primary\" href=\"" + url + "\">U+" + hex + "</a>";
+        } else if (/\s/.test(c)) {
+            statistics.set(hex, (statistics.get(hex) || 0) + 1);
+            return "<span class=\"char has-background-white\">U+" + hex + "</span>";
+        }
+
+        return c;
     }
+
     document.getElementById("view-button").addEventListener('click', function (event) {
         var input = document.getElementById("input").value;
         var output = "";
         var surrogate = 0;
+        statistics.clear();
         for (var i = 0; i < input.length; i += 1) {
             var c = input.charCodeAt(i);
             if (surrogate != 0) {
@@ -85,6 +98,19 @@
             }
         }
         document.getElementById("output").innerHTML = output;
+        var statisticsUl = document.getElementById("statistics");
+        statisticsUl.innerHTML = "";
+        statistics.forEach(function (count, hex) {
+            var li = document.createElement("li");
+            if (invisible_characters.get(hex) !== undefined) {
+                var name = invisible_characters.get(hex);
+                var url = hex + "-" + name.replaceAll(" ", "-") + ".html";
+                li.innerHTML = count + "⨉ <a class=\"char has-background-primary\" href=\"" + url + "\">U+" + hex + " " + name + " </a>";
+            } else {
+                li.innerHTML = count + "⨉ <span class=\"char has-background-white\">U+" + hex + " </span>";
+            }
+            statisticsUl.appendChild(li);
+        });
     });
 </script>
 {{ end }}

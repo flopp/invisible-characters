@@ -1,13 +1,9 @@
 .char {
     color: black;
-    background-color: #9999FF;
     padding: 0 2px;
     margin: 0 2px;
 }
 
-#fab-wrapper {
-    position: fixed;
-    bottom: 32px;
-    z-index: 1000;
-    right: 32px;
+.wrap {
+    overflow-wrap: break-word;
 }

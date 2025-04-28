@@ -11,20 +11,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.3/css/bulma.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style.css" />
-    
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5R26BMTV');</script>
-<!-- End Google Tag Manager -->
+
+    <script defer src="{{.UmamiUrl}}" data-website-id="{{.UmamiId}}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-77L9419NRL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-77L9419NRL');
+    </script>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5R26BMTV"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
     <nav class="navbar is-link">
         <div class="container">
             <div class="navbar-brand">
@@ -40,9 +34,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="container">
         {{ template "content" . }}
     </div>
-    <div id="fab-wrapper">
-        <a class="button" href="#consent-banner-settings">COOKIES</a>
-    </div>
     <footer class="footer">
         <div class="content has-text-centered">
             <p>
@@ -53,8 +44,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <a href="https://github.com/flopp/invisible-characters">Github</a>
                 -
                 <a href="legal.html">Legal/Privacy</a>
-                -
-                <a href="#consent-banner-settings">Cookies</a>
             </p>
             <p>
                 <a href="https://freiburg.run" title="Laufveranstaltungen in Freiburg (Marathon, Halbmarathon, 10km, 5km)
@@ -78,5 +67,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 e.trigger.classList.remove("is-danger");
             }, 500);
         });
+    </script>
+    <script>
+        if (location.hash === '#disable-umami') {
+            localStorage.setItem('umami.disabled', 'true');
+            alert('Umami is now DISABLED in this browser.');
+        }
+        if (location.hash === '#enable-umami') {
+            localStorage.removeItem('umami.disabled');
+            alert('Umami is now ENABLED in this browser.');
+        }
     </script>
 </body>{{ end }}

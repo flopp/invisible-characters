@@ -1,35 +1,35 @@
-{{ define "canonical" }}{{.Url}}{{ end }}
-{{ define "title" }}U+{{.Code}} {{.Name}}{{ end }}
-{{ define "description" }}U+{{.Code}} {{.Name}}{{ end }}
+{{ define "canonical" }}{{.Character.Url}}{{ end }}
+{{ define "title" }}U+{{.Character.Code}} {{.Character.Name}}{{ end }}
+{{ define "description" }}U+{{.Character.Code}} {{.Character.Name}}{{ end }}
 
 {{ define "content" }}
 <section class="section">
     <table class="table">
         <tr>
             <td>Name</td>
-            <td>{{.Name}}</td>
+            <td>{{.Character.Name}}</td>
         </tr>
         <tr>
             <td>Codepoint</td>
-            <td>U+{{.Code}}</td>
+            <td>U+{{.Character.Code}}</td>
         </tr>
-        {{if .Description}}
+        {{if .Character.Description}}
         <tr>
             <td>Description</td>
-            <td>{{.Description}}</td>
+            <td>{{.Character.Description}}</td>
         </tr>
         {{end}}
         <tr>
             <td>Copy to the clipboard</td>
             <td>
-                <button class="button copy-button" data-clipboard-text="{{.Char}}">
+                <button class="button copy-button" data-clipboard-text="{{.Character.Char}}">
                     <span>Copy</span>
                     <span class="icon is-small"><i class="fas fa-copy"></i></span>
                 </button>
             </td>
         </tr>
         <tr>
-            <td colspan=2><a href="https://unicode-explorer.com/c/{{.Code}}" alt="U+{{.Code}} - {{.Name}}">All infos about U+{{.Code}} - {{.Name}}</a></td>
+            <td colspan=2><a href="https://unicode-explorer.com/c/{{.Character.Code}}" alt="U+{{.Character.Code}} - {{.Character.Name}}">All infos about U+{{.Character.Code}} - {{.Character.Name}}</a></td>
         </tr>
     </table>
 </section>

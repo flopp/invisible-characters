@@ -1,16 +1,20 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
 
 	"io"
 
+	"github.com/flopp/go-filehash"
 	"golang.org/x/text/unicode/runenames"
 )
 
@@ -21,25 +25,77 @@ type Character struct {
 	Name        string
 	Description string
 	Url         string
+	Group       *Group
 }
 
-func loadCharacters(fileName string) ([]*Character, error) {
+type Range struct {
+	StartId uint64
+	EndId   uint64
+}
+
+type Group struct {
+	Name        string
+	Description string
+	Ranges      []Range
+	Characters  []*Character
+	Url         string
+}
+
+func (g Group) HasCharacter(id uint64) bool {
+	for _, r := range g.Ranges {
+		if id >= r.StartId && id <= r.EndId {
+			return true
+		}
+	}
+	return false
+}
+
+func (g *Group) AddCharacter(c *Character) {
+	if c.Group != nil {
+		return
+	}
+	c.Group = g
+	g.Characters = append(g.Characters, c)
+}
+
+func loadCharacters(fileName string) ([]*Character, []*Group, error) {
 	jsonFile, err := os.Open(fileName)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer jsonFile.Close()
 
 	jsonBlob, err := io.ReadAll(io.Reader(jsonFile))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var characters []Character
 	err = json.Unmarshal(jsonBlob, &characters)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
+
+	groups := make([]*Group, 0)
+	groups = append(groups, &Group{
+		Name:        "Tags",
+		Description: "Tags is a Unicode block containing formatting tag characters. The block is designed to mirror ASCII. It was originally intended for language tags, but has now been repurposed as emoji modifiers, specifically for region flags.",
+		Ranges: []Range{
+			{StartId: 0xE0000, EndId: 0xE007F},
+		},
+		Characters: make([]*Character, 0),
+		Url:        "block-tags.html",
+	})
+	groups = append(groups, &Group{
+		Name:        "Variation Selector & Variation Selectors Supplement",
+		Description: "Variation Selectors & Variation Selectors Supplement are Unicode blocks containing variation selectors used to specify a glyph variant for a preceding character.",
+		Ranges: []Range{
+			{StartId: 0xFE00, EndId: 0xFE0F},
+			{StartId: 0xE0100, EndId: 0xE01EF},
+		},
+		Characters: make([]*Character, 0),
+		Url:        "block-variation-selectors.html",
+	})
 
 	ids := make([]uint64, 0)
 	m := make(map[uint64]*Character)
@@ -48,7 +104,7 @@ func loadCharacters(fileName string) ([]*Character, error) {
 
 		id, err := strconv.ParseUint(c.Code, 16, 32)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		ids = append(ids, id)
 		c.Id = id
@@ -76,7 +132,7 @@ func loadCharacters(fileName string) ([]*Character, error) {
 
 		code := fmt.Sprintf("%04X", r)
 		url := fmt.Sprintf("%s-%s.html", code, strings.Replace(name, " ", "-", -1))
-		m[id] = &Character{id, code, string(r), name, "", url}
+		m[id] = &Character{id, code, string(r), name, "", url, nil}
 	}
 
 	sort.Slice(ids, func(i, j int) bool {
@@ -87,17 +143,30 @@ func loadCharacters(fileName string) ([]*Character, error) {
 	for _, id := range ids {
 		c, found := m[id]
 		if !found {
-			return nil, fmt.Errorf("cannot find id %v in  map", id)
+			return nil, nil, fmt.Errorf("cannot find id %v in  map", id)
 		}
 
 		result = append(result, c)
 	}
 
-	return result, nil
+	for _, c := range result {
+		for _, g := range groups {
+			if g.HasCharacter(c.Id) {
+				g.AddCharacter(c)
+				break
+			}
+		}
+	}
+
+	return result, groups, nil
 }
 
 type Data struct {
 	Characters []*Character
+	Groups     []*Group
+	UmamiUrl   string
+	UmamiId    string
+	Character  *Character
 }
 
 type Context struct {
@@ -114,7 +183,8 @@ func createCharacterFile(context *Context, c *Character, t *template.Template) {
 	}
 	defer f.Close()
 
-	if err := t.ExecuteTemplate(f, "base", c); err != nil {
+	context.Data.Character = c
+	if err := t.ExecuteTemplate(f, "base", context.Data); err != nil {
 		panic(err)
 	}
 
@@ -129,6 +199,7 @@ func createIndexFile(context *Context, t *template.Template) {
 	}
 	defer f.Close()
 
+	context.Data.Character = nil
 	if err := t.ExecuteTemplate(f, "base", context.Data); err != nil {
 		panic(err)
 	}
@@ -168,18 +239,79 @@ func createSitemapFile(context *Context) {
 	}
 }
 
+func Download(url string, dst string) error {
+	wrapErr := func(err error) error {
+		return fmt.Errorf("download %s to %s: %w", url, dst, err)
+	}
+
+	// Check directory exists before attempting to create file
+	err := os.MkdirAll(filepath.Dir(dst), 0770)
+	if err != nil {
+		return wrapErr(err)
+	}
+
+	// Create custom transport with insecure certificates
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+
+	// Make the request
+	resp, err := client.Get(url)
+	if err != nil {
+		return wrapErr(err)
+	}
+	defer resp.Body.Close()
+
+	// Check for HTTP errors before creating the file
+	if resp.StatusCode != http.StatusOK {
+		return wrapErr(fmt.Errorf("non-ok http status: %v", resp.Status))
+	}
+
+	// Create the output file after confirming the download is working
+	out, err := os.Create(dst)
+	if err != nil {
+		return wrapErr(err)
+	}
+	defer out.Close()
+
+	// Use a buffer for more efficient copying
+	buf := make([]byte, 32*1024) // 32KB buffer
+	_, err = io.CopyBuffer(out, resp.Body, buf)
+	if err != nil {
+		return wrapErr(err)
+	}
+
+	return nil
+}
+
+func DownloadHash(url string, dst string) (string, error) {
+	if strings.Contains(dst, "HASH") {
+		tmpfile, err := os.CreateTemp("", "")
+		if err != nil {
+			return "", err
+		}
+		defer os.Remove(tmpfile.Name())
+
+		err = Download(url, tmpfile.Name())
+		if err != nil {
+			return "", err
+		}
+		return filehash.Copy(tmpfile.Name(), dst, "HASH")
+	} else {
+		return dst, Download(url, dst)
+	}
+}
+
 func main() {
 	outDir := ".out"
 	charactersFile := "characters.json"
+	umamiId := "095debc3-b1f4-440b-af18-e17341425b75"
 
-	characters, err := loadCharacters(charactersFile)
+	characters, groups, err := loadCharacters(charactersFile)
 	if err != nil {
 		panic(err)
 	}
-	context := Context{outDir, Data{characters}, nil}
-
-	tCharacter := template.Must(template.ParseFiles("templates/base.html", "templates/character.html"))
-	tIndex := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 
 	if err := os.RemoveAll(outDir); err != nil {
 		panic(err)
@@ -188,10 +320,34 @@ func main() {
 		panic(err)
 	}
 
+	umamiScript1, err := DownloadHash("https://cloud.umami.is/script.js", fmt.Sprintf("%s/u-HASH.js", outDir))
+	if err != nil {
+		panic(err)
+	}
+	umamiScript2, err := filepath.Rel(outDir, umamiScript1)
+	if err != nil {
+		panic(err)
+	}
+	umamiScript := "/" + umamiScript2
+
+	context := Context{outDir, Data{characters, groups, umamiScript, umamiId, nil}, nil}
+
+	tCharacter := template.Must(template.ParseFiles("templates/base.html", "templates/character.html"))
+	tIndex := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
+	/*
+		tGroup := template.Must(template.ParseFiles("templates/base.html", "templates/group.html"))
+	*/
+
 	createIndexFile(&context, tIndex)
 	for _, c := range context.Data.Characters {
 		createCharacterFile(&context, c, tCharacter)
 	}
+	/*
+		for _, g := range context.Data.Groups {
+			createGroupFile(&context, g, tGroup)
+		}
+	*/
+
 	createOtherFile(&context, "legal.html")
 	createOtherFile(&context, "view.html")
 	createOtherFile(&context, "empty-tweet.html")
