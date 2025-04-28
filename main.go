@@ -352,6 +352,7 @@ func main() {
 	createOtherFile(&context, "view.html")
 	createOtherFile(&context, "empty-tweet.html")
 	createOtherFile(&context, "empty-whatsapp.html")
+	createOtherFile(&context, "invisible-tiktok-name.html")
 	createOtherFile(&context, "404.html")
 
 	createSitemapFile(&context)
