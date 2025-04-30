@@ -4,6 +4,8 @@
 
 {{ define "content" }}
 <section class="section">
+    <a class="button is-link" href="/">Back to List</a>
+
     <table class="table">
         <tr>
             <td>Name</td>
@@ -22,7 +24,7 @@
         <tr>
             <td>Copy to the clipboard</td>
             <td>
-                <button class="button copy-button" data-clipboard-text="{{.Character.Char}}">
+                <button class="button copy-button is-primary" data-clipboard-text="{{.Character.Char}}">
                     <span>Copy</span>
                     <span class="icon is-small"><i class="fas fa-copy"></i></span>
                 </button>
