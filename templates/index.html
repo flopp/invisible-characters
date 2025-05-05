@@ -7,9 +7,9 @@
     <h3 class="title">Invisible Unicode characters?</h3>
     <p>
         In Unicode there are a lot of invisible, non-printable characters:
-        regular white-space characters (e.g. <a href="0020-SPACE.html">U+0020 SPACE</a>),
-        language specific fillers (e.g. <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> of the Korean Hangual alphabet),
-        or special characters (e.g. <a href="2800-BRAILLE-PATTERN-BLANK.html">U+2800 BRAILLE PATTERN BLANK</a>).
+        regular white-space characters (e.g. {{charlink "0020"}}),
+        language specific fillers (e.g. {{charlink "3164"}} of the Korean Hangual alphabet),
+        or special characters (e.g. {{charlink "2800"}}).
         While all of these have a specific meaning in their natural context, they can be used in various applications that don't allow for regular whitespace characters.
     </p>
 </section>
@@ -20,16 +20,19 @@
         While the popular game <a href="https://www.epicgames.com/store/de/p/among-us" target=_blank>Among Us</a> doesn't allow for an empty player name, or a name just containing regular space characters, you can copy and paste the <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> when naming your player.
     </p>
     <p>
-        <a href="empty-whatsapp.html">Send empty Whatsapp messages (instructions)</a> using the <a href="200E-LEFT-TO-RIGHT-MARK.html">U+200E LEFT-TO-RIGHT MARK</a>.
+        <a href="empty-whatsapp.html">Send empty Whatsapp messages (instructions)</a> using the {{charlink "200E"}}.
     </p>
     <p>
-        When copy and pasting the <a href="200C-ZERO-WIDTH-NON-JOINER.html">U+200C ZERO WIDTH NON-JOINER</a> into the title field of a Youtube video, the title becomes empty.
+        When copy and pasting the {{charlink "200C"}} into the title field of a Youtube video, the title becomes empty.
     </p>
     <p>
-        <a href="empty-tweet.html">Send empty tweets (instructions)</a> using the <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a>.
+        <a href="empty-tweet.html">Send empty tweets (instructions)</a> using the {{charlink "3164"}}.
     </p>
     <p>
-        You can have an <a href="invisible-tiktok-name.html">invisible TikTok nickname (instructions!)</a> by using the <a href="FFFC-OBJECT-REPLACEMENT-CHARACTER.html">U+FFFC OBJECT REPLACEMENT CHARACTER</a> character.
+        You can have an <a href="invisible-tiktok-name.html">invisible TikTok nickname (instructions!)</a> by using the {{charlink "FFFC"}} character.
+    </p>
+    <p>
+        <a href="empty-instagram-comment.html">Send an empty Instagram comment (instructions)</a> using the {{charlink "200B"}}.
     </p>
 </section>
 
@@ -47,7 +50,7 @@
         {{ range .Characters }}
         <tr>
             <td>
-                <a href="{{ .Url }}">U+{{ .Code }} {{ .Name }}</a>
+                {{charlink .Code}}
             </td>
             <td>
                 <button class="button copy-button is-primary" data-clipboard-text="{{ .Char }}">

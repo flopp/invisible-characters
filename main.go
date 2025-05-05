@@ -170,9 +170,10 @@ type Data struct {
 }
 
 type Context struct {
-	OutDir string
-	Data   Data
-	Urls   []string
+	OutDir        string
+	Data          Data
+	Urls          []string
+	TemplateFuncs template.FuncMap
 }
 
 func createCharacterFile(context *Context, c *Character, t *template.Template) {
@@ -208,7 +209,7 @@ func createIndexFile(context *Context, t *template.Template) {
 }
 
 func createOtherFile(context *Context, url string) {
-	t := template.Must(template.ParseFiles("templates/base.html", fmt.Sprintf("templates/%s", url)))
+	t := template.Must(template.New("").Funcs(context.TemplateFuncs).ParseFiles("templates/base.html", fmt.Sprintf("templates/%s", url)))
 
 	fileName := fmt.Sprintf("%s/%s", context.OutDir, url)
 	f, err := os.Create(fileName)
@@ -330,10 +331,20 @@ func main() {
 	}
 	umamiScript := "/" + umamiScript2
 
-	context := Context{outDir, Data{characters, groups, umamiScript, umamiId, nil}, nil}
+	funcs := make(template.FuncMap)
+	funcs["charlink"] = func(char string) template.HTML {
+		for _, c := range characters {
+			if c.Code == char {
+				return template.HTML(fmt.Sprintf("<a href=\"%s\" title=\"Information about U+%s %s\">U+%s %s</a>", c.Url, c.Code, c.Name, c.Code, c.Name))
+			}
+		}
+		panic(fmt.Sprintf("cannot find character %s", char))
+	}
 
-	tCharacter := template.Must(template.ParseFiles("templates/base.html", "templates/character.html"))
-	tIndex := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
+	context := Context{outDir, Data{characters, groups, umamiScript, umamiId, nil}, nil, funcs}
+
+	tCharacter := template.Must(template.New("").Funcs(context.TemplateFuncs).ParseFiles("templates/base.html", "templates/character.html"))
+	tIndex := template.Must(template.New("").Funcs(context.TemplateFuncs).ParseFiles("templates/base.html", "templates/index.html"))
 	/*
 		tGroup := template.Must(template.ParseFiles("templates/base.html", "templates/group.html"))
 	*/
@@ -353,6 +364,7 @@ func main() {
 	createOtherFile(&context, "empty-tweet.html")
 	createOtherFile(&context, "empty-whatsapp.html")
 	createOtherFile(&context, "invisible-tiktok-name.html")
+	createOtherFile(&context, "empty-instagram-comment.html")
 	createOtherFile(&context, "404.html")
 
 	createSitemapFile(&context)
