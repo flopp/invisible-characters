@@ -2,3 +2,5 @@ github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258 h1:BwkqZZzqprz5b
 github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258/go.mod h1:6avocwCMVrCHkEhUbuEEDKxjXOtQsXmCzdFclLQ5sUg=
 golang.org/x/text v0.14.0 h1:ScX5w1eTa3QqT8oi6+ziP7dTV1S2+ALU0bI+0zXKWiQ=
 golang.org/x/text v0.14.0/go.mod h1:18ZOQIKpY8NJVqYksKHtTdi31H5itFRjB5/qKTNYzSU=
+golang.org/x/text v0.25.0 h1:qVyWApTSYLk/drJRO5mDlNYskwQznZmkpV2c8q9zls4=
+golang.org/x/text v0.25.0/go.mod h1:WEdwpYrmk1qmdHvhkSTNPm3app7v4rsT8F2UD6+VHIA=
