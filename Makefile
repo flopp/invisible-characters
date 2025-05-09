@@ -12,5 +12,5 @@ clean:
 upload:
 	rsync \
 		.out/* \
-		static/style.css static/.htaccess static/favicon.ico static/robots.txt \
+		static/style.css static/.htaccess static/favicon.ico static/robots.txt static/yg3fyzua3sdbgfzwf6xjv5tu483buz49.txt \
 		$(TARGET)
