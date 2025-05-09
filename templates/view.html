@@ -88,7 +88,7 @@
         return c;
     }
 
-    document.getElementById("view-button").addEventListener('click', function (event) {
+    function process() {
         var input = document.getElementById("input").value;
         var output = "";
         var surrogate = 0;
@@ -118,15 +118,19 @@
             }
             statisticsUl.appendChild(li);
         });
+    }
 
-        document.getElementById("sample-text").addEventListener('click', function (event) {
-            document.getElementById("input").value = "This is a sample text with common invisible characters: \u200B\u200C\u200D\u2060\uFEFF\nHere are some unusual characters: \u3164\u2800\u061c";
-            document.getElementById("view-button").click();
-        });
-        document.getElementById("clear").addEventListener('click', function (event) {
-            document.getElementById("input").value = "";
-            document.getElementById("view-button").click();
-        });
+    document.getElementById("view-button").addEventListener('click', function (event) {
+        process();
+    });
+
+    document.getElementById("sample-text").addEventListener('click', function (event) {
+        document.getElementById("input").value = "This is a sample text with common invisible characters: \u200B\u200C\u200D\u2060\uFEFF\nHere are some unusual characters: \u3164\u2800\u061c";
+        process();
+    });
+    document.getElementById("clear").addEventListener('click', function (event) {
+        document.getElementById("input").value = "";
+        process();
     });
 </script>
 {{ end }}
