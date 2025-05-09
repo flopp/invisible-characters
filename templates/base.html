@@ -32,10 +32,16 @@
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
-                        <a class="button is-primary" href="/view.html">
+                        <a class="button is-primary" href="/view.html" title="View and decode invisible, non-printable Unicode characters">
                             <strong>Decoder Tool</strong>
                         </a>
+                        <button class="button" id="theme-button" title="Switch between light and dark mode">
+                            <span class="icon">
+                                <i class="fa-solid fa-circle-half-stroke"></i>
+                            </span>
+                        </button>
                     </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -74,6 +80,30 @@
             setTimeout(function () {
                 e.trigger.classList.remove("is-danger");
             }, 500);
+        });
+
+        function switchTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            switchTheme('dark');
+        } else if (localStorage.getItem('theme') === 'light') {
+            switchTheme('light');
+        }
+
+        document.getElementById('theme-button').addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                switchTheme("light");
+            } else if (currentTheme === 'light') {
+                switchTheme("dark");
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                switchTheme("light");
+            } else {
+                switchTheme("dark");
+            }
         });
     </script>
 </body>{{ end }}
