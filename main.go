@@ -112,7 +112,6 @@ func loadCharacters(fileName string) ([]*Character, []*Group, error) {
 		c.Char = string(rune(int(id)))
 
 		c.Url = fmt.Sprintf("%s-%s.html", c.Code, strings.Replace(c.Name, " ", "-", -1))
-		c.DescriptionHtml = template.HTML(c.Description)
 
 		m[c.Id] = c
 	}
@@ -158,6 +157,22 @@ func loadCharacters(fileName string) ([]*Character, []*Group, error) {
 				break
 			}
 		}
+	}
+
+	// Create links to character pages in descriptions
+	replacements := make(map[string]string)
+	for _, c := range result {
+		replacements[fmt.Sprintf("U+%s", c.Code)] = fmt.Sprintf("<a href=\"/%s\" title=\"Information about U+%s %s\">U+%s %s</a>", c.Url, c.Code, c.Name, c.Code, c.Name)
+	}
+	for _, c := range result {
+		if c.Description == "" {
+			continue
+		}
+		newDescription := c.Description
+		for old, new := range replacements {
+			newDescription = strings.ReplaceAll(newDescription, old, new)
+		}
+		c.DescriptionHtml = template.HTML(newDescription)
 	}
 
 	return result, groups, nil
