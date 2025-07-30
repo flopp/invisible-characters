@@ -19,13 +19,14 @@ import (
 )
 
 type Character struct {
-	Id          uint64
-	Code        string
-	Char        string
-	Name        string
-	Description string
-	Url         string
-	Group       *Group
+	Id              uint64
+	Code            string
+	Char            string
+	Name            string
+	Description     string
+	DescriptionHtml template.HTML
+	Url             string
+	Group           *Group
 }
 
 type Range struct {
@@ -111,6 +112,7 @@ func loadCharacters(fileName string) ([]*Character, []*Group, error) {
 		c.Char = string(rune(int(id)))
 
 		c.Url = fmt.Sprintf("%s-%s.html", c.Code, strings.Replace(c.Name, " ", "-", -1))
+		c.DescriptionHtml = template.HTML(c.Description)
 
 		m[c.Id] = c
 	}
@@ -132,7 +134,7 @@ func loadCharacters(fileName string) ([]*Character, []*Group, error) {
 
 		code := fmt.Sprintf("%04X", r)
 		url := fmt.Sprintf("%s-%s.html", code, strings.Replace(name, " ", "-", -1))
-		m[id] = &Character{id, code, string(r), name, "", url, nil}
+		m[id] = &Character{id, code, string(r), name, "", "", url, nil}
 	}
 
 	sort.Slice(ids, func(i, j int) bool {
