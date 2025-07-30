@@ -7,3 +7,13 @@
 .wrap {
     overflow-wrap: break-word;
 }
+
+
+.has-pushed-down-footer-child {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.has-pushed-down-footer-child > section:last-of-type {
+    flex-grow: 1;
+}
