@@ -8,9 +8,7 @@
     overflow-wrap: break-word;
 }
 
-
 .has-pushed-down-footer-child {
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }
