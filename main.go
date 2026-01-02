@@ -224,7 +224,7 @@ func createGroupFile(context *Context, g *Group, t *template.Template) {
 		panic(err)
 	}
 
-	context.Urls = append(context.Urls, "index.html")
+	context.Urls = append(context.Urls, g.Url)
 }
 
 func createIndexFile(context *Context, t *template.Template) {
