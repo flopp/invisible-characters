@@ -4,64 +4,86 @@
 
 {{ define "content" }}
 <section class="section">
-    <h3 class="title">Invisible Unicode characters?</h3>
-    <p>
-        In Unicode there are a lot of invisible, non-printable characters:
-        regular white-space characters (e.g. {{charlink "0020"}}),
-        language specific fillers (e.g. {{charlink "3164"}} of the Korean Hangual alphabet),
-        or special characters (e.g. {{charlink "2800"}}).
-        While all of these have a specific meaning in their natural context, they can be used in various applications that don't allow for regular whitespace characters.
-    </p>
+    <div class="container">
+        <h3 class="title">Invisible Unicode characters?</h3>
+        <p>
+            In Unicode there are a lot of invisible, non-printable characters:
+            regular white-space characters (e.g. {{charlink "0020"}}),
+            language specific fillers (e.g. {{charlink "3164"}} of the Korean Hangual alphabet),
+            or special characters (e.g. {{charlink "2800"}}).
+            While all of these have a specific meaning in their natural context, they can be used in various applications that don't allow for regular whitespace characters.
+        </p>
+    </div>
 </section>
 
 <section class="section pt-0">
-    <h3 class="title">Unusual Applications</h3>
-    <p>
-        While the popular game <a href="https://www.epicgames.com/store/de/p/among-us" target=_blank>Among Us</a> doesn't allow for an empty player name, or a name just containing regular space characters, you can copy and paste the <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> when naming your player.
-    </p>
-    <p>
-        <a href="empty-whatsapp.html">Send empty Whatsapp messages (instructions)</a> using the {{charlink "200E"}}.
-    </p>
-    <p>
-        When copy and pasting the {{charlink "200C"}} into the title field of a Youtube video, the title becomes empty.
-    </p>
-    <p>
-        <a href="empty-tweet.html">Send empty tweets (instructions)</a> using the {{charlink "3164"}}.
-    </p>
-    <p>
-        You can have an <a href="invisible-tiktok-name.html">invisible TikTok nickname (instructions!)</a> by using the {{charlink "FFFC"}} character.
-    </p>
-    <p>
-        <a href="empty-instagram-comment.html">Send an empty Instagram comment (instructions)</a> using the {{charlink "200B"}}.
-    </p>
+    <div class="container">
+        <h3 class="title">Unusual Applications</h3>
+        <p>
+            While the popular game <a href="https://www.epicgames.com/store/de/p/among-us" target=_blank>Among Us</a> doesn't allow for an empty player name, or a name just containing regular space characters, you can copy and paste the <a href="3164-HANGUL-FILLER.html">U+3164 HANGUL FILLER</a> when naming your player.
+        </p>
+        <p>
+            <a href="empty-whatsapp.html">Send empty Whatsapp messages (instructions)</a> using the {{charlink "200E"}}.
+        </p>
+        <p>
+            When copy and pasting the {{charlink "200C"}} into the title field of a Youtube video, the title becomes empty.
+        </p>
+        <p>
+            <a href="empty-tweet.html">Send empty tweets (instructions)</a> using the {{charlink "3164"}}.
+        </p>
+        <p>
+            You can have an <a href="invisible-tiktok-name.html">invisible TikTok nickname (instructions!)</a> by using the {{charlink "FFFC"}} character.
+        </p>
+        <p>
+            <a href="empty-instagram-comment.html">Send an empty Instagram comment (instructions)</a> using the {{charlink "200B"}}.
+        </p>
+    </div>
 </section>
 
 <section class="section pt-0">
-    <h3 class="title">View invisible, non-printable characters</h3>
-    <p>
-        If you want to see what invisible, non-printable characters are contained in a block of text, you can use our <a href="view.html">decoder tool to view invisible, non-printable characters</a>.
-    </p>
-    <a class="button is-link" href="view.html">Text decoder tool</a>
+    <div class="container">
+        <h3 class="title">View invisible, non-printable characters</h3>
+        
+        <p>
+            If you want to see what invisible, non-printable characters are contained in a block of text, you can use our <a href="view.html">decoder tool to view invisible, non-printable characters</a>.
+        </p>
+        <a class="button is-link" href="view.html">Text decoder tool</a>
+    </div>
 </section>
     
 <section class="section pt-0">
-    <h3 class="title">List of invisible Unicode characters</h3>
-    <table class="table">
-        {{ range .Characters }}
-        <tr>
-            <td>
-                {{charlink .Code}}
-            </td>
-            <td>
-                <button class="button copy-button is-primary" data-clipboard-text="{{ .Char }}">
-                    <span>Copy</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-copy"></i>
-                    </span>
-                </button>
-            </td>
-        </tr>
-        {{ end }}
-    </table>
+    <div class="container">
+        <h3 class="title">List of invisible Unicode characters</h3>
+        <table class="table">
+            {{ range .Characters }}
+            {{ if .Group }}
+            {{else}}
+            <tr>
+                <td>
+                    {{charlink .Code}}
+                </td>
+                <td>
+                    <button class="button copy-button is-primary" data-clipboard-text="{{ .Char }}">
+                        <span>Copy</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-copy"></i>
+                        </span>
+                    </button>
+                </td>
+            </tr>
+            {{end}}
+            {{ end }}
+        </table>
+        <h3 class="title">Bigger groups of invisible Unicode characters</h3>
+        <table class="table">
+            {{ range .Groups }}
+            <tr>
+                <td>
+                    <a href="{{.Url}}">{{.Name}}</a>
+                </td>
+            </tr>
+            {{ end }}
+        </table>
+    </div>
 </section>
 {{ end }}

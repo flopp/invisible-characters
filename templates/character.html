@@ -4,32 +4,44 @@
 
 {{ define "content" }}
 <section class="section">
-    <a class="button is-link" href="/">Back to List</a>
-
-    <table class="table">
-        <tr>
-            <td>Name</td>
-            <td>{{.Character.Name}}</td>
-        </tr>
-        <tr>
-            <td>Codepoint</td>
-            <td>U+{{.Character.Code}}</td>
-        </tr>
-        {{if .Character.Description}}
-        <tr>
-            <td>Description</td>
-            <td>{{.Character.DescriptionHtml}}</td>
-        </tr>
+    <div class="container">
+        {{if .Character.Group}}
+        <a class="button is-link mb-4" href="{{.Character.Group.Url}}">Back to Group: {{.Character.Group.Name}}</a>
+        {{else}}
+        <a class="button is-link mb-4" href="/">Back to List</a>
         {{end}}
-        <tr>
-            <td>Copy to the clipboard</td>
-            <td>
-                <button class="button copy-button is-primary" data-clipboard-text="{{.Character.Char}}">
-                    <span>Copy</span>
-                    <span class="icon is-small"><i class="fas fa-copy"></i></span>
-                </button>
-            </td>
-        </tr>
-    </table>
+
+        <table class="table">
+            <tr>
+                <td>Name</td>
+                <td>{{.Character.Name}}</td>
+            </tr>
+            <tr>
+                <td>Codepoint</td>
+                <td>U+{{.Character.Code}}</td>
+            </tr>
+            {{if .Character.Group}}
+            <tr>
+                <td>Group</td>
+                <td><a href="{{.Character.Group.Url}}">{{.Character.Group.Name}}</a></td>
+            </tr>
+            {{end}}
+            {{if .Character.Description}}
+            <tr>
+                <td>Description</td>
+                <td>{{.Character.DescriptionHtml}}</td>
+            </tr>
+            {{end}}
+            <tr>
+                <td>Copy to the clipboard</td>
+                <td>
+                    <button class="button copy-button is-primary" data-clipboard-text="{{.Character.Char}}">
+                        <span>Copy</span>
+                        <span class="icon is-small"><i class="fas fa-copy"></i></span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
 </section>
 {{ end }}

@@ -11,6 +11,7 @@
 .has-pushed-down-footer-child {
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 .has-pushed-down-footer-child > section:last-of-type {
     flex-grow: 1;

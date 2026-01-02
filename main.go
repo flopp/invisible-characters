@@ -184,6 +184,7 @@ type Data struct {
 	UmamiUrl   string
 	UmamiId    string
 	Character  *Character
+	Group      *Group
 }
 
 type Context struct {
@@ -207,6 +208,23 @@ func createCharacterFile(context *Context, c *Character, t *template.Template) {
 	}
 
 	context.Urls = append(context.Urls, c.Url)
+}
+
+func createGroupFile(context *Context, g *Group, t *template.Template) {
+	fileName := fmt.Sprintf("%s/%s", context.OutDir, g.Url)
+	f, err := os.Create(fileName)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	context.Data.Character = nil
+	context.Data.Group = g
+	if err := t.ExecuteTemplate(f, "base", context.Data); err != nil {
+		panic(err)
+	}
+
+	context.Urls = append(context.Urls, "index.html")
 }
 
 func createIndexFile(context *Context, t *template.Template) {
@@ -358,23 +376,20 @@ func main() {
 		panic(fmt.Sprintf("cannot find character %s", char))
 	}
 
-	context := Context{outDir, Data{characters, groups, umamiScript, umamiId, nil}, nil, funcs}
+	context := Context{outDir, Data{characters, groups, umamiScript, umamiId, nil, nil}, nil, funcs}
 
 	tCharacter := template.Must(template.New("").Funcs(context.TemplateFuncs).ParseFiles("templates/base.html", "templates/character.html"))
 	tIndex := template.Must(template.New("").Funcs(context.TemplateFuncs).ParseFiles("templates/base.html", "templates/index.html"))
-	/*
-		tGroup := template.Must(template.ParseFiles("templates/base.html", "templates/group.html"))
-	*/
+	tGroup := template.Must(template.New("").Funcs(context.TemplateFuncs).ParseFiles("templates/base.html", "templates/group.html"))
 
 	createIndexFile(&context, tIndex)
 	for _, c := range context.Data.Characters {
 		createCharacterFile(&context, c, tCharacter)
 	}
-	/*
-		for _, g := range context.Data.Groups {
-			createGroupFile(&context, g, tGroup)
-		}
-	*/
+
+	for _, g := range context.Data.Groups {
+		createGroupFile(&context, g, tGroup)
+	}
 
 	createOtherFile(&context, "legal.html")
 	createOtherFile(&context, "view.html")
